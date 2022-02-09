@@ -74,7 +74,10 @@ func AuthenticateRequest(request *http.Request) *errors.RestErr {
 
 	at, err := getAccessToken(accessTokenId)
 	if err != nil {
-		return nil
+		if err.Code == http.StatusNotFound {
+			return nil
+		}
+		return err
 	}
 
 	request.Header.Add(headerXClientId, fmt.Sprintf("%v", at.ClientId))
